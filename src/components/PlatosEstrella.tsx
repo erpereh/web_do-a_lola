@@ -1,111 +1,148 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 
-const platos = [
-  { num: "01", name: "Torreznos de Soria", desc: "Crujientes por fuera, jugosos por dentro. El plato más pedido de la casa.", badge: "Nº1", pedidos: 187, gradient: "from-amber-900/80 via-amber-800/60 to-stone-900/90" },
-  { num: "02", name: "Huevos Rotos con Jamón", desc: "Clásico de la taberna, con producto de calidad y punto perfecto.", badge: "TOP", pedidos: 143, gradient: "from-yellow-900/70 via-orange-900/50 to-stone-900/80" },
-  { num: "03", name: "Tartar de Atún", desc: "Frescura y sabor en cada bocado, con el toque justo de la casa.", badge: null, pedidos: 89, gradient: "from-rose-900/60 via-stone-800/50 to-stone-900/80" },
-  { num: "04", name: "Callos a la Madrileña", desc: "Guiso lento y reconfortante, como los hacía la abuela.", badge: null, pedidos: 76, gradient: "from-orange-900/70 via-red-900/40 to-stone-900/90" },
-  { num: "05", name: "Pollo al Curry", desc: "Un viaje de sabores con el toque hindú que sorprende a todos.", badge: null, pedidos: 94, gradient: "from-yellow-800/60 via-amber-900/50 to-stone-900/80" },
-  { num: "06", name: "Croquetas de Jamón", desc: "Cremositas por dentro, doradas por fuera. Imprescindibles.", badge: "TOP", pedidos: 162, gradient: "from-amber-800/70 via-yellow-900/50 to-stone-900/85" },
-];
-
-const AnimatedCounter = ({ target, inView }: { target: number; inView: boolean }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1200;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      setCount(Math.floor(progress * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [inView, target]);
-  return <span>{count}</span>;
+type SignatureDish = {
+  number: string;
+  name: string;
+  description: string;
+  badge?: string;
 };
 
-const BentoCard = ({
-  plato,
-  inView,
-  index,
-  isHero,
-  className,
-}: {
-  plato: (typeof platos)[0];
-  inView: boolean;
-  index: number;
-  isHero?: boolean;
-  className?: string;
-}) => {
+const signatureDishes: SignatureDish[] = [
+  {
+    number: "01",
+    name: "Huevos Revueltos",
+    description:
+      "Melosos, sabrosos y con ese punto de cocina honesta que convierte la primera cucharada en tradición.",
+    badge: "Nº1 más pedido",
+  },
+  {
+    number: "02",
+    name: "Croquetas de Jamón",
+    description: "Cremosas por dentro, doradas por fuera y siempre en su punto.",
+    badge: "TOP",
+  },
+  {
+    number: "03",
+    name: "Tortilla de Patata",
+    description: "Jugosa, equilibrada y con el sabor castizo que pide pan y sobremesa.",
+  },
+];
+
+const tastingLine = [
+  {
+    name: "Tartar de Atún",
+    description: "Fresco y elegante con acento cítrico.",
+    price: "18€ aprox.",
+  },
+  {
+    name: "Callos a la Madrileña",
+    description: "Guiso intenso, meloso y profundamente madrileño.",
+    price: "14€ aprox.",
+  },
+  {
+    name: "Pollo al Curry",
+    description: "Aromático, cremoso y con un final especiado redondo.",
+    price: "16€ aprox.",
+  },
+];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.65,
+      delay: index * 0.15,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
+const AccentPattern = () => (
+  <div className="pointer-events-none absolute inset-0">
+    <div className="absolute -top-28 -left-16 h-72 w-72 rounded-full bg-primary/12 blur-3xl" />
+    <div className="absolute -bottom-20 -right-12 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+    <div className="absolute inset-0 bg-[linear-gradient(125deg,transparent_0%,rgba(201,168,76,0.08)_45%,transparent_100%)]" />
+    <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_21px,rgba(245,240,232,0.03)_22px)]" />
+  </div>
+);
+
+const SignatureCard = ({ dish, index, featured = false }: { dish: SignatureDish; index: number; featured?: boolean }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: 0.1 + index * 0.08, duration: 0.5 }}
-      className={`bento-card group relative rounded-2xl border border-border hover:border-primary/50 transition-all duration-500 overflow-hidden cursor-pointer ${className ?? ""}`}
+    <motion.article
+      custom={index}
+      variants={cardVariants}
+      className={`group relative overflow-hidden rounded-2xl border border-white/12 bg-[#0f0f0f] ${
+        featured ? "h-[600px]" : "h-[295px]"
+      }`}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.28, ease: "easeOut" }}
     >
-      {/* Gradient placeholder (future photo) */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${plato.gradient} transition-transform duration-700 group-hover:scale-105`} />
+      <AccentPattern />
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/75" />
 
-      {/* Decorative number */}
-      <span className="absolute top-4 right-4 font-display text-6xl md:text-7xl font-bold text-foreground/[0.06] leading-none select-none pointer-events-none">
-        {plato.num}
-      </span>
+      <motion.span
+        className={`absolute font-display leading-none text-[#c9a84c] select-none ${
+          featured ? "bottom-28 left-7 md:left-10 text-[90px]" : "bottom-20 left-6 text-[78px]"
+        }`}
+        style={{ opacity: 0.15 }}
+        whileHover={{ opacity: 0.4 }}
+        transition={{ duration: 0.25 }}
+      >
+        {dish.number}
+      </motion.span>
 
-      {/* Badge */}
-      {plato.badge && (
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5">
-          <span className="badge-dot w-2 h-2 rounded-full bg-primary" />
-          <span className="text-primary text-xs font-semibold tracking-widest uppercase">
-            {plato.badge}
+      <div className={`absolute inset-x-0 bottom-0 z-10 ${featured ? "p-8 md:p-10" : "p-6"}`}>
+        {dish.badge && (
+          <span className="mb-4 inline-flex items-center rounded-full bg-[#c9a84c] px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-black">
+            {dish.badge}
           </span>
-        </div>
-      )}
+        )}
 
-      {/* Content — bottom-aligned */}
-      <div className={`relative z-10 flex flex-col justify-end h-full ${isHero ? "p-8 md:p-10" : "p-5 md:p-6"}`}>
-        <h3 className={`font-display font-semibold text-foreground mb-1 ${isHero ? "text-2xl md:text-4xl" : "text-lg md:text-xl"}`}>
-          {plato.name}
-        </h3>
+        <motion.h3
+          className={`font-display text-[#f5f0e8] leading-tight ${featured ? "text-[34px] md:text-[40px]" : "text-[28px]"}`}
+          whileHover={{ x: 4 }}
+          transition={{ duration: 0.22 }}
+        >
+          {dish.name}
+        </motion.h3>
 
-        {/* Description — revealed on hover */}
-        <div className="overflow-hidden">
-          <p className={`text-muted-foreground leading-relaxed transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400 ${isHero ? "text-sm md:text-base max-w-lg" : "text-xs md:text-sm"}`}>
-            {plato.desc}
-          </p>
-        </div>
+        <p className="mt-2 max-w-xl text-[14px] text-zinc-300">{dish.description}</p>
 
-        <span className={`inline-flex items-center gap-1.5 text-primary/70 font-medium mt-2 ${isHero ? "text-sm" : "text-xs"}`}>
-          +<AnimatedCounter target={plato.pedidos} inView={inView} /> pedidos este mes
-        </span>
+        <motion.button
+          initial={{ opacity: 0, y: 8 }}
+          whileHover={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="mt-5 inline-flex items-center rounded-full border border-[#c9a84c]/90 bg-[#c9a84c] px-4 py-2 text-[11px] font-semibold uppercase tracking-widest text-black"
+        >
+          Ver en carta
+        </motion.button>
       </div>
-    </motion.div>
+
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/55 to-transparent opacity-70" />
+    </motion.article>
   );
 };
 
 const PlatosEstrella = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-20 md:py-32 px-4" ref={ref}>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <section className="relative py-20 md:py-32 px-4" ref={ref}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(201,168,76,0.08),transparent_55%)]" />
+
+      <div className="relative max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-14"
         >
-          <h2 className="font-display text-3xl md:text-5xl font-bold mb-4">
-            Lo que no puedes perderte
-          </h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mb-4">Lo que no puedes perderte</h2>
           <div className="flex items-center justify-center gap-3 mb-3">
             <span className="h-px w-12 bg-primary/40" />
             <span className="text-primary text-sm">◆</span>
@@ -116,33 +153,36 @@ const PlatosEstrella = () => {
           </p>
         </motion.div>
 
-        {/* Hero card — full width */}
-        <BentoCard
-          plato={platos[0]}
-          inView={inView}
-          index={0}
-          isHero
-          className="w-full aspect-[21/9] md:aspect-[3/1] mb-5"
-        />
+        <motion.div initial="hidden" animate={inView ? "visible" : "hidden"} className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-5 md:gap-6">
+          <SignatureCard dish={signatureDishes[0]} index={0} featured />
 
-        {/* Bento grid — asymmetric */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-[200px] md:auto-rows-[220px]">
-          {/* 02 */}
-          <BentoCard plato={platos[1]} inView={inView} index={1} />
-          {/* 03 */}
-          <BentoCard plato={platos[2]} inView={inView} index={2} />
-          {/* 04 — tall card spanning 2 rows */}
-          <BentoCard
-            plato={platos[3]}
-            inView={inView}
-            index={3}
-            className="row-span-2 col-span-2 lg:col-span-1"
-          />
-          {/* 05 */}
-          <BentoCard plato={platos[4]} inView={inView} index={4} />
-          {/* 06 */}
-          <BentoCard plato={platos[5]} inView={inView} index={5} />
-        </div>
+          <div className="grid grid-rows-2 gap-5 md:gap-6">
+            <SignatureCard dish={signatureDishes[1]} index={1} />
+            <SignatureCard dish={signatureDishes[2]} index={2} />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          {tastingLine.map((dish, index) => (
+            <motion.article
+              key={dish.name}
+              custom={index + 3}
+              variants={cardVariants}
+              className="group relative rounded-xl border border-white/10 bg-[#111] p-5 transition-colors duration-300 hover:border-[#c9a84c]/65"
+            >
+              <h4 className="font-display text-[24px] text-[#f5f0e8] leading-tight">{dish.name}</h4>
+              <p className="mt-2 text-sm text-zinc-300">{dish.description}</p>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-[#c9a84c] text-sm font-medium">{dish.price}</span>
+                <span className="h-px w-12 bg-[#c9a84c]/35 transition-all duration-300 group-hover:w-20" />
+              </div>
+            </motion.article>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
