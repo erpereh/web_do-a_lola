@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 36 33% 93%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 36 33% 93%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 36 33% 93%;
+
+    --primary: 43 52% 54%;
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 36 33% 93%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 36 10% 60%;
+
+    --accent: 43 52% 54%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 43 20% 20%;
+    --input: 0 0% 15%;
+    --ring: 43 52% 54%;
+
+    --radius: 0.5rem;
+
+    --gold: 43 52% 54%;
+    --gold-light: 43 60% 66%;
+    --gold-glow: 43 52% 54%;
+
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 36 33% 93%;
+    --sidebar-primary: 43 52% 54%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 36 33% 93%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 43 52% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+  .text-gold-light {
+    color: hsl(var(--gold-light));
+  }
+
+  /* Shimmer effect on hover */
+  .plato-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.07),
+      hsl(var(--primary) / 0.12),
+      hsl(var(--primary) / 0.07),
+      transparent
+    );
+    transition: none;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .plato-card:hover::before {
+    animation: shimmer 0.8s ease-out forwards;
+  }
+
+  /* Badge glow */
+  .badge-glow {
+    animation: badge-pulse 2.5s ease-in-out infinite;
+  }
+
+  /* Badge animated dot */
+  .badge-dot {
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+
+  /* Bento card hover glow */
+  .bento-card:hover {
+    box-shadow: 0 0 20px 0 hsl(var(--primary) / 0.15);
+  }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.2); }
+  50% { box-shadow: 0 0 12px 2px hsl(var(--primary) / 0.3); }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
