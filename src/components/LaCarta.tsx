@@ -55,6 +55,11 @@ const LaCarta = () => {
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
+              style={
+                active === tab
+                  ? { boxShadow: "0 0 12px rgba(201,168,76,0.3)" }
+                  : {}
+              }
             >
               {tab}
             </button>
@@ -68,19 +73,24 @@ const LaCarta = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="space-y-0"
           >
             {menu[active]?.map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between py-4 border-b border-border/40"
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.3 }}
+                className="group flex items-center justify-between py-4 border-b border-border/40 cursor-default"
               >
-                <span className="text-foreground text-base">{item.name}</span>
-                <span className="text-primary font-semibold text-sm ml-4 whitespace-nowrap">
+                <span className="text-foreground text-base transition-colors duration-200 group-hover:translate-x-1 transform transition-transform duration-200">
+                  {item.name}
+                </span>
+                <span className="text-primary font-semibold text-sm ml-4 whitespace-nowrap transition-colors duration-200 group-hover:text-[#e8c97a]">
                   {item.price}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </AnimatePresence>

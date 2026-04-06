@@ -21,7 +21,7 @@ const ReviewCard = ({ r }: ReviewCardProps) => {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="bg-card rounded-2xl p-8 text-center h-full flex flex-col justify-between transition-all duration-300"
+      className="bg-card rounded-2xl p-6 md:p-8 text-center h-full flex flex-col justify-between transition-all duration-300"
       style={{
         border: hovered ? "1px solid #c9a84c" : "1px solid var(--border, rgba(255,255,255,0.1))",
         boxShadow: hovered ? "0 0 20px rgba(201,168,76,0.15)" : "none",
@@ -130,10 +130,10 @@ const Resenas = () => {
             </motion.div>
           </div>
 
-          <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 p-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground transition-colors">
             <ChevronLeft size={28} />
           </button>
-          <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 p-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground transition-colors">
             <ChevronRight size={28} />
           </button>
 

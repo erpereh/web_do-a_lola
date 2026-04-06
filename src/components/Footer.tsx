@@ -5,7 +5,12 @@ const Footer = () => {
     <footer className="border-t border-border/40 py-12 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center gap-6">
         <div>
-          <p className="font-display text-2xl font-bold text-foreground">Doña Lola</p>
+          <p
+            className="font-display text-2xl font-bold text-foreground"
+            style={{ textShadow: "0 0 20px rgba(201,168,76,0.25)" }}
+          >
+            Doña Lola
+          </p>
           <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">
             Gastrotaberna · Vallecas · Madrid
           </p>
@@ -28,10 +33,18 @@ const Footer = () => {
           href="https://instagram.com/donalolagastrotaberna"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm"
         >
-          <Instagram size={20} />
+          <Instagram size={16} />
+          <span>@donalolagastrotaberna</span>
         </a>
+
+        {/* Ornamental divider */}
+        <div className="flex items-center gap-3 opacity-40">
+          <div className="h-px w-16 bg-primary" />
+          <span className="text-primary text-xs">◆</span>
+          <div className="h-px w-16 bg-primary" />
+        </div>
 
         <div className="text-xs text-muted-foreground space-y-1">
           <p>© 2025 Doña Lola Restaurante Gastrotaberna. Todos los derechos reservados.</p>
