@@ -47,16 +47,27 @@ const SobreNosotros = () => {
           </div>
         </motion.div>
 
-        {/* Image placeholder */}
+        {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="aspect-[4/3] rounded-2xl overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, hsl(30 40% 12%), hsl(35 50% 18%), hsl(25 30% 10%))",
-          }}
-        />
+          className="aspect-[4/3] rounded-2xl overflow-hidden group relative"
+          style={{ border: "1px solid rgba(201,168,76,0.3)" }}
+        >
+          <motion.div
+            initial={{ clipPath: "inset(100% 0 0 0)" }}
+            animate={inView ? { clipPath: "inset(0% 0 0 0)" } : {}}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="w-full h-full"
+          >
+            <img
+              src="/restaurante.png"
+              alt="Restaurante Doña Lola"
+              className="w-full h-full object-cover transition-transform duration-[600ms] ease-in-out group-hover:scale-[1.03]"
+            />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

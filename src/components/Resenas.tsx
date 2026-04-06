@@ -10,6 +10,51 @@ const reviews = [
   { stars: 5, text: "Torreznos, croquetas, pollo tika, gambas al ajillo... todo con un sabor estupendo.", author: "Reseña de Google", sub: "" },
 ];
 
+interface ReviewCardProps {
+  r: typeof reviews[0];
+}
+
+const ReviewCard = ({ r }: ReviewCardProps) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="bg-card rounded-2xl p-8 text-center h-full flex flex-col justify-between transition-all duration-300"
+      style={{
+        border: hovered ? "1px solid #c9a84c" : "1px solid var(--border, rgba(255,255,255,0.1))",
+        boxShadow: hovered ? "0 0 20px rgba(201,168,76,0.15)" : "none",
+      }}
+    >
+      <div>
+        <div className="flex justify-center gap-1 mb-4">
+          {Array.from({ length: 5 }).map((_, s) => (
+            <Star
+              key={s}
+              size={16}
+              className={s < r.stars ? "fill-primary text-primary" : "text-muted"}
+            />
+          ))}
+        </div>
+        <p className="text-foreground text-base md:text-lg italic leading-relaxed mb-6">
+          "{r.text}"
+        </p>
+      </div>
+      <div className="flex items-center justify-center gap-3">
+        <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary font-display font-bold text-sm flex-shrink-0"
+          style={{ background: "#1a1a1a" }}>
+          {r.author[0]}
+        </div>
+        <div className="text-left">
+          <p className="text-foreground text-sm font-medium">{r.author}</p>
+          {r.sub && <p className="text-muted-foreground text-xs">{r.sub}</p>}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Resenas = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -27,7 +72,7 @@ const Resenas = () => {
 
   return (
     <section id="resenas" className="py-20 md:py-32 px-4" ref={ref}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -37,8 +82,37 @@ const Resenas = () => {
           Lo que dicen nuestros clientes
         </motion.h2>
 
+        {/* Desktop: 3-column grid */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6">
+          {reviews.slice(0, 3).map((r, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.1 * i }}
+            >
+              <ReviewCard r={r} />
+            </motion.div>
+          ))}
+        </div>
+        {reviews.length > 3 && (
+          <div className="hidden md:grid md:grid-cols-2 gap-6 mt-6 max-w-2xl mx-auto">
+            {reviews.slice(3).map((r, i) => (
+              <motion.div
+                key={i + 3}
+                initial={{ opacity: 0, y: 30 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.1 * (i + 3) }}
+              >
+                <ReviewCard r={r} />
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {/* Mobile: carousel */}
         <div
-          className="relative"
+          className="md:hidden relative"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -50,29 +124,7 @@ const Resenas = () => {
             >
               {reviews.map((r, i) => (
                 <div key={i} className="w-full flex-shrink-0 px-4">
-                  <div className="bg-card border border-border rounded-2xl p-8 md:p-10 text-center max-w-2xl mx-auto">
-                    <div className="flex justify-center gap-1 mb-4">
-                      {Array.from({ length: 5 }).map((_, s) => (
-                        <Star
-                          key={s}
-                          size={18}
-                          className={s < r.stars ? "fill-primary text-primary" : "text-muted"}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-foreground text-lg md:text-xl italic leading-relaxed mb-6">
-                      "{r.text}"
-                    </p>
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-primary font-display font-bold text-sm">
-                        {r.author[0]}
-                      </div>
-                      <div className="text-left">
-                        <p className="text-foreground text-sm font-medium">{r.author}</p>
-                        {r.sub && <p className="text-muted-foreground text-xs">{r.sub}</p>}
-                      </div>
-                    </div>
-                  </div>
+                  <ReviewCard r={r} />
                 </div>
               ))}
             </motion.div>

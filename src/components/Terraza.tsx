@@ -1,23 +1,30 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 const Terraza = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["calc(95% - 20px)", "calc(95% + 20px)"]);
 
   return (
     <section
       ref={ref}
       className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden"
     >
-      {/* Parallax bg placeholder */}
-      <div
+      {/* Parallax background image */}
+      <motion.div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(160deg, hsl(25 20% 8%), hsl(30 30% 14%), hsl(20 15% 6%))",
+          backgroundImage: "url('/terraza.png')",
+          backgroundSize: "cover",
+          backgroundPositionX: "center",
+          backgroundPositionY: bgY,
         }}
       />
-      <div className="absolute inset-0 bg-black/40" />
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/[0.45]" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -25,7 +32,10 @@ const Terraza = () => {
         transition={{ duration: 0.7 }}
         className="relative z-10 text-center px-4 max-w-2xl"
       >
-        <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+        <h2
+          className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4"
+          style={{ textShadow: "0 0 40px rgba(201,168,76,0.3)" }}
+        >
           Cuando el tiempo acompaña...
         </h2>
         <p className="font-display text-xl md:text-2xl text-primary italic mb-4">
